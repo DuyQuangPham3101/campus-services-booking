@@ -49,13 +49,6 @@ class Cancellation
             $stmt_booking->bind_param("i", $booking_id);
             $stmt_booking->execute();
 
-            // 4. Log booking action
-            $sql_log = "INSERT INTO booking_logs (booking_id, action, old_status, new_status, notes, changed_by) 
-                        VALUES (?, 'cancel', ?, 'cancelled', ?, ?)";
-            $stmt_log = $this->conn->prepare($sql_log);
-            $stmt_log->bind_param("issi", $booking_id, $old_status, $reason, $cancelled_by);
-            $stmt_log->execute();
-
             $this->conn->commit();
             return true;
         } catch (Exception $e) {

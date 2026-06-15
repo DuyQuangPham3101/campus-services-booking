@@ -15,7 +15,6 @@ global $conn;
 $conn->query("SET FOREIGN_KEY_CHECKS = 0");
 $conn->query("TRUNCATE TABLE cancellations");
 $conn->query("TRUNCATE TABLE approvals");
-$conn->query("TRUNCATE TABLE booking_logs");
 $conn->query("TRUNCATE TABLE bookings");
 $conn->query("SET FOREIGN_KEY_CHECKS = 1");
 

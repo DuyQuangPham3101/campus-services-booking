@@ -1,15 +1,12 @@
 -- SQL Script for Campus Services Booking (CSB) Database
 -- Clean previous tables if they exist to start fresh (Reverse order of dependencies)
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS usage_reports;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS maintenance_schedules;
 DROP TABLE IF EXISTS cancellations;
 DROP TABLE IF EXISTS approvals;
-DROP TABLE IF EXISTS booking_logs;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS time_slots;
-DROP TABLE IF EXISTS resource_images;
 DROP TABLE IF EXISTS resources;
 DROP TABLE IF EXISTS booking_policies;
 DROP TABLE IF EXISTS resource_categories;
@@ -78,19 +75,11 @@ CREATE TABLE resources (
     capacity INT(11) NOT NULL,
     status VARCHAR(50) NOT NULL DEFAULT 'available', -- 'available', 'maintenance', 'unavailable'
     location VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (category_id) REFERENCES resource_categories(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 7. Resource Images table
-CREATE TABLE resource_images (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    resource_id INT(11) NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
-    uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 8. Time Slots table
+-- 7. Time Slots table
 CREATE TABLE time_slots (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     start_time TIME NOT NULL,
@@ -100,7 +89,7 @@ CREATE TABLE time_slots (
     slot_name VARCHAR(50) NOT NULL -- e.g., 'Slot 1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 9. Bookings table
+-- 8. Bookings table
 CREATE TABLE bookings (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     user_id INT(11) NOT NULL,
@@ -114,21 +103,7 @@ CREATE TABLE bookings (
     FOREIGN KEY (time_slot_id) REFERENCES time_slots(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 10. Booking Logs table (Audit trails)
-CREATE TABLE booking_logs (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    booking_id INT(11) NOT NULL,
-    action VARCHAR(100) NOT NULL, -- 'create', 'update_status', 'cancel'
-    old_status VARCHAR(50) DEFAULT NULL,
-    new_status VARCHAR(50) DEFAULT NULL,
-    notes TEXT DEFAULT NULL,
-    changed_by INT(11) NOT NULL,
-    changed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
-    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 11. Approvals table
+-- 9. Approvals table
 CREATE TABLE approvals (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     booking_id INT(11) NOT NULL,
@@ -140,7 +115,7 @@ CREATE TABLE approvals (
     FOREIGN KEY (approved_by) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 12. Cancellations table (MODIFIED: added cancelled_by)
+-- 10. Cancellations table (MODIFIED: added cancelled_by)
 CREATE TABLE cancellations (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     booking_id INT(11) NOT NULL,
@@ -151,7 +126,7 @@ CREATE TABLE cancellations (
     FOREIGN KEY (cancelled_by) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 13. Maintenance Schedules table
+-- 11. Maintenance Schedules table
 CREATE TABLE maintenance_schedules (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     resource_id INT(11) NOT NULL,
@@ -162,7 +137,7 @@ CREATE TABLE maintenance_schedules (
     FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 14. Notifications table
+-- 12. Notifications table
 CREATE TABLE notifications (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
     user_id INT(11) NOT NULL,
@@ -171,18 +146,6 @@ CREATE TABLE notifications (
     is_read TINYINT(1) DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- 15. Usage Reports table
-CREATE TABLE usage_reports (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    resource_id INT(11) NOT NULL,
-    total_bookings INT(11) DEFAULT 0,
-    peak_hour_usage INT(11) DEFAULT 0,
-    report_start DATE NOT NULL,
-    report_end DATE NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================

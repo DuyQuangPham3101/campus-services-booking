@@ -128,14 +128,6 @@ class Booking
         );
 
         if ($stmt->execute()) {
-            $booking_id = $stmt->insert_id;
-
-            // 7. Write audit log entry
-            $log_sql = "INSERT INTO booking_logs (booking_id, action, new_status, changed_by) VALUES (?, 'create', ?, ?)";
-            $log_stmt = $this->conn->prepare($log_sql);
-            $log_stmt->bind_param("isi", $booking_id, $final_status, $user_id);
-            $log_stmt->execute();
-
             return true;
         } else {
             return $stmt->error;

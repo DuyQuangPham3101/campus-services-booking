@@ -41,13 +41,6 @@ class Approval
             $stmt_booking->bind_param("si", $status, $booking_id);
             $stmt_booking->execute();
 
-            // 3. Log booking change
-            $sql_log = "INSERT INTO booking_logs (booking_id, action, old_status, new_status, notes, changed_by) 
-                        VALUES (?, 'update_status', 'pending', ?, ?, ?)";
-            $stmt_log = $this->conn->prepare($sql_log);
-            $stmt_log->bind_param("issi", $booking_id, $status, $note, $approved_by);
-            $stmt_log->execute();
-
             $this->conn->commit();
             return true;
         } catch (Exception $e) {
