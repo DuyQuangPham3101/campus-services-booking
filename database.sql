@@ -1,12 +1,15 @@
 -- SQL Script for Campus Services Booking (CSB) Database
 -- Clean previous tables if they exist to start fresh (Reverse order of dependencies)
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS usage_reports;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS maintenance_schedules;
 DROP TABLE IF EXISTS cancellations;
 DROP TABLE IF EXISTS approvals;
+DROP TABLE IF EXISTS booking_logs;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS time_slots;
+DROP TABLE IF EXISTS resource_images;
 DROP TABLE IF EXISTS resources;
 DROP TABLE IF EXISTS booking_policies;
 DROP TABLE IF EXISTS resource_categories;
