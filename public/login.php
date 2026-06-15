@@ -3,6 +3,8 @@ session_start();
 require_once '../config/database.php';
 
 $message = "";
+$email = "";
+$selected_role = "student";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']);
@@ -79,12 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <form method="POST" id="loginForm">
             <!-- Hidden Role Input -->
-            <input type="hidden" name="role" id="role_input" value="student">
+            <input type="hidden" name="role" id="role_input" value="<?= htmlspecialchars($selected_role) ?>">
 
             <!-- Role Selector Options -->
             <div class="role-select-title">Select Role</div>
             <div class="role-options">
-                <div class="role-option active" data-role="student" onclick="selectRole('student')">
+                <div class="role-option <?= $selected_role === 'student' ? 'active' : '' ?>" data-role="student" onclick="selectRole('student')">
                     <!-- Student Icon -->
                     <svg class="role-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
@@ -92,14 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </svg>
                     <span class="role-option-label">Student</span>
                 </div>
-                <div class="role-option" data-role="lecturer" onclick="selectRole('lecturer')">
+                <div class="role-option <?= $selected_role === 'lecturer' ? 'active' : '' ?>" data-role="lecturer" onclick="selectRole('lecturer')">
                     <!-- Lecturer Icon -->
                     <svg class="role-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 4a2 2 0 00-2-2m-2 3h.01M5.5 8.5L8 11.5L11.5 8.5"></path>
                     </svg>
                     <span class="role-option-label">Lecturer</span>
                 </div>
-                <div class="role-option" data-role="admin" onclick="selectRole('admin')">
+                <div class="role-option <?= $selected_role === 'admin' ? 'active' : '' ?>" data-role="admin" onclick="selectRole('admin')">
                     <!-- Admin Icon -->
                     <svg class="role-option-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -115,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
-                <input type="email" name="email" placeholder="email@campus.edu.vn" required>
+                <input type="email" name="email" placeholder="email@campus.edu.vn" value="<?= htmlspecialchars($email) ?>" required>
             </div>
 
             <!-- Password Input -->

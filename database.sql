@@ -162,13 +162,13 @@ INSERT INTO departments (name, description) VALUES
 
 -- Insert Users
 -- Default passwords are hashed using bcrypt/PASSWORD_DEFAULT for safety. Here we use 'password123' as plaintext password hash.
--- Note: 'password123' hashed: $2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK
+-- Note: 'password123' hashed: $2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq
 INSERT INTO users (name, email, password, role) VALUES
-('Admin User', 'admin@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'admin'),
-('Lecturer Huy', 'huy.nguyen@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'lecturer'),
-('Student Quang', 'quang.pham@student.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'student'),
-('Lecturer A', 'lecturer.a@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'lecturer'),
-('Student A', 'student.a@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'student');
+('Admin User', 'admin@campus.edu.vn', '$2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq', 'admin'),
+('Lecturer Huy', 'huy.nguyen@campus.edu.vn', '$2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq', 'lecturer'),
+('Student Quang', 'quang.pham@student.edu.vn', '$2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq', 'student'),
+('Lecturer A', 'lecturer.a@campus.edu.vn', '$2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq', 'lecturer'),
+('Student A', 'student.a@campus.edu.vn', '$2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq', 'student');
 
 -- Insert User Profiles
 INSERT INTO user_profiles (user_id, student_code, phone, address, department_id) VALUES
