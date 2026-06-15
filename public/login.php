@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Role check
         if ($user['role'] !== $selected_role) {
-            $message = "Access denied: Account role mismatch.";
+            $message = "Access denied: Account role mismatch (Expected '{$user['role']}', Selected '{$selected_role}').";
         } else if (password_verify($password, $user['password'])) {
             $_SESSION['user'] = $user;
             header("Location: dashboard.php");
