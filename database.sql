@@ -163,11 +163,14 @@ INSERT INTO departments (name, description) VALUES
 INSERT INTO users (name, email, password, role) VALUES
 ('Admin User', 'admin@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'admin'),
 ('Lecturer Huy', 'huy.nguyen@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'lecturer'),
-('Student Quang', 'quang.pham@student.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'student');
+('Student Quang', 'quang.pham@student.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'student'),
+('Lecturer A', 'lecturer.a@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'lecturer'),
+('Student A', 'student.a@campus.edu.vn', '$2y$10$tM2H92q6jV.r2WkF1qK6GexL5C6i/4wD8H1lW5N/s0Z3w26p4k1oK', 'student');
 
 -- Insert User Profiles
 INSERT INTO user_profiles (user_id, student_code, phone, address, department_id) VALUES
-(3, 'SV123456', '0912345678', 'Hanoi, Vietnam', 1);
+(3, 'SV123456', '0912345678', 'Hanoi, Vietnam', 1),
+(5, 'SV654321', '0987654321', 'Hanoi, Vietnam', 1);
 
 -- Insert Resource Categories
 INSERT INTO resource_categories (name, description, max_capacity, requires_approval, max_booking_per_week) VALUES
