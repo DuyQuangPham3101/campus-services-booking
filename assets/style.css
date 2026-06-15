@@ -486,7 +486,7 @@ input:focus, select:focus, textarea:focus {
   max-width: 100%;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1, 0 10px 10px -5px rgba(0, 0, 0, 0.04));
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   display: flex;
   min-height: 550px;
 }

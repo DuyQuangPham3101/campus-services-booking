@@ -15,7 +15,7 @@ $users = $controller->index();
 <html>
 <head>
     <title>Users - CSB System</title>
-    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="stylesheet" href="../../assets/style.css?v=1.1">
     <meta name="viewport" content="width=device-width, initial-scale=device-width">
 </head>
 <body class="app-layout-body">

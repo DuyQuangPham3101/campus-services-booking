@@ -22,7 +22,7 @@ $peakUsage = $reportController->getPeakHourUsage();
 <html>
 <head>
     <title>Reports - CSB System</title>
-    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="stylesheet" href="../../assets/style.css?v=1.1">
     <meta name="viewport" content="width=device-width, initial-scale=device-width">
     <style>
         .report-section {

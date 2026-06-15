@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html>
 <head>
     <title>Edit Time Slot - CSB System</title>
-    <link rel="stylesheet" href="../../assets/style.css">
+    <link rel="stylesheet" href="../../assets/style.css?v=1.1">
     <meta name="viewport" content="width=device-width, initial-scale=device-width">
 </head>
 <body class="app-layout-body">
