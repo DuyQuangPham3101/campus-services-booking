@@ -269,6 +269,24 @@ $user = $_SESSION['user'];
 
         </div>
 
+        <!-- APPROVALS (For Lecturer/Admin) -->
+        <?php if ($user['role'] === 'admin' || $user['role'] === 'lecturer'): ?>
+        <div class="menu-item">
+            <a href="../views/approvals/index.php">
+                <button class="menu-btn">Approvals Queue</button>
+            </a>
+        </div>
+        <?php endif; ?>
+
+        <!-- REPORTS (For Lecturer/Admin) -->
+        <?php if ($user['role'] === 'admin' || $user['role'] === 'lecturer'): ?>
+        <div class="menu-item">
+            <a href="../views/reports/index.php">
+                <button class="menu-btn">Usage Reports</button>
+            </a>
+        </div>
+        <?php endif; ?>
+
     </div>
 
     <!-- MAIN -->

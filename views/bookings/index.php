@@ -92,6 +92,14 @@ $bookings = $controller->index();
 
                 </a>
 
+                <?php if ($row['status'] !== 'cancelled'): ?>
+                <a href="../cancellations/create.php?booking_id=<?= $row['id'] ?>">
+                    <button class="btn btn-edit" style="background: #e0a800;">
+                        Cancel
+                    </button>
+                </a>
+                <?php endif; ?>
+
                 <a href="delete.php?id=<?= $row['id'] ?>"
                    onclick="return confirm('Delete this booking?')">
 
