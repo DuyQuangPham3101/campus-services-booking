@@ -8,14 +8,23 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 
+require_once '../../config/database.php';
 require_once '../../controllers/CancellationController.php';
-require_once '../../controllers/BookingController.php';
 
 $cancellationController = new CancellationController();
-$bookingController = new BookingController();
 
 $booking_id = isset($_GET['booking_id']) ? (int)$_GET['booking_id'] : 0;
-$booking = $bookingController->getBooking($booking_id);
+
+// Fetch detailed booking information with joins
+$sql = "SELECT b.*, r.name as resource_name, t.slot_name 
+        FROM bookings b
+        JOIN resources r ON b.resource_id = r.id
+        JOIN time_slots t ON b.time_slot_id = t.id
+        WHERE b.id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $booking_id);
+$stmt->execute();
+$booking = $stmt->get_result()->fetch_assoc();
 
 if (!$booking) {
     die("Booking not found.");
@@ -42,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($result === true) {
             $success = "Booking cancelled successfully.";
-            // Redirect after 2 seconds
             header("refresh:2;url=../bookings/index.php");
         } else {
             $error = "Error during cancellation: " . $result;
@@ -50,40 +58,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cancel Booking</title>
+    <title>Cancel Booking - CSB System</title>
     <link rel="stylesheet" href="../../assets/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=device-width">
 </head>
-<body>
+<body class="app-layout-body">
 
-<div class="container" style="width: 500px; margin-top: 50px;">
-    <h2>Cancel Booking #<?= $booking_id ?></h2>
-    <p><strong>Resource ID:</strong> <?= $booking['resource_id'] ?></p>
-    <p><strong>Booking Date:</strong> <?= $booking['booking_date'] ?></p>
-    <p><strong>Current Status:</strong> <span class="status <?= $booking['status'] ?>"><?= ucfirst($booking['status']) ?></span></p>
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <?php include __DIR__ . '/../sidebar.php'; ?>
 
-    <?php if ($success): ?>
-        <div class="message success"><?= htmlspecialchars($success) ?>. Redirecting...</div>
-    <?php endif; ?>
-
-    <?php if ($error): ?>
-        <div class="message error"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
-
-    <?php if (!$success): ?>
-    <form method="POST">
-        <label for="reason">Reason for Cancellation</label>
-        <textarea name="reason" id="reason" rows="4" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-top: 10px;" required placeholder="Type the reason why you are cancelling this booking..."></textarea>
-        
-        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-            <button type="submit" class="btn btn-delete" style="width: 45%;">Confirm Cancel</button>
-            <a href="../bookings/index.php" class="btn btn-edit" style="width: 45%; text-align: center; line-height: 20px;">Back to List</a>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="content-header">
+            <h2>Cancel Booking #<?= htmlspecialchars($booking_id) ?></h2>
         </div>
-    </form>
-    <?php endif; ?>
+
+        <div class="content-card" style="max-width: 600px;">
+            <div style="margin-bottom: 20px; font-size: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 15px;">
+                <p style="margin-bottom: 8px;"><strong>Resource Name:</strong> <span style="color: var(--primary); font-weight: 600;"><?= htmlspecialchars($booking['resource_name']) ?></span></p>
+                <p style="margin-bottom: 8px;"><strong>Time Slot:</strong> <?= htmlspecialchars($booking['slot_name']) ?></p>
+                <p style="margin-bottom: 8px;"><strong>Booking Date:</strong> <?= htmlspecialchars($booking['booking_date']) ?></p>
+                <p><strong>Status:</strong> <span class="status <?= $booking['status'] ?>"><?= ucfirst($booking['status']) ?></span></p>
+            </div>
+
+            <?php if ($success): ?>
+                <div class="message success"><?= htmlspecialchars($success) ?>. Redirecting to bookings list...</div>
+            <?php endif; ?>
+
+            <?php if ($error): ?>
+                <div class="message error"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
+
+            <?php if (!$success): ?>
+            <form method="POST">
+                <label for="reason">Reason for Cancellation</label>
+                <textarea name="reason" id="reason" rows="4" placeholder="Type the reason why you are cancelling this booking..." required></textarea>
+                
+                <div style="display: flex; gap: 15px; margin-top: 25px;">
+                    <button type="submit" class="btn btn-delete" style="flex: 1;">Confirm Cancellation</button>
+                    <a href="../bookings/index.php" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
 
 </body>

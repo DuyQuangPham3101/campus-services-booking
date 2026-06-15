@@ -15,7 +15,10 @@ class Resource
     // GET ALL
     public function getAll()
     {
-        $sql = "SELECT * FROM resources";
+        $sql = "SELECT r.*, rc.name as category_name 
+                FROM resources r
+                JOIN resource_categories rc ON r.category_id = rc.id
+                ORDER BY r.id";
         return $this->conn->query($sql);
     }
 

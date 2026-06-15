@@ -15,9 +15,19 @@ class Booking
     // =========================================
     // READ ALL BOOKINGS
     // =========================================
-    public function getAll()
+    public function getAll($user_id = null)
     {
-        $sql = "SELECT * FROM bookings";
+        $sql = "SELECT b.*, u.name as user_name, r.name as resource_name, t.slot_name 
+                FROM bookings b
+                JOIN users u ON b.user_id = u.id
+                JOIN resources r ON b.resource_id = r.id
+                JOIN time_slots t ON b.time_slot_id = t.id";
+
+        if ($user_id !== null) {
+            $sql .= " WHERE b.user_id = " . (int)$user_id;
+        }
+
+        $sql .= " ORDER BY b.created_at DESC";
 
         return $this->conn->query($sql);
     }

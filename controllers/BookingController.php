@@ -12,9 +12,9 @@ class BookingController
     }
 
     // READ ALL
-    public function index()
+    public function index($user_id = null)
     {
-        return $this->bookingModel->getAll();
+        return $this->bookingModel->getAll($user_id);
     }
 
     // CREATE
