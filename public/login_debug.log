@@ -1,0 +1,12 @@
+Login attempt - Email: 'lecturer.a@campus.edu.vn'
+User found: yes, ID: 2, Role: lecturer
+Hash in DB: $2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq
+Password verification: SUCCESS
+Login attempt - Email: 'lecturer.a@campus.edu.vn'
+User found: yes, ID: 2, Role: lecturer
+Hash in DB: $2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq
+Password verification: SUCCESS
+Login attempt - Email: 'quang.pham@student.edu.vn'
+User found: yes, ID: 3, Role: student
+Hash in DB: $2y$10$sbM6ED4aaL/blrOkmhfTMu6q5NL6Y/Ldi43Hm8J7gikuNSbuR.8Jq
+Password verification: SUCCESS
