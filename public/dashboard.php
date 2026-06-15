@@ -50,7 +50,9 @@ $approved_bookings = $conn->query("SELECT COUNT(*) as count FROM bookings WHERE 
                 <h3>Total Resources</h3>
                 <p><?= $total_resources ?></p>
             </div>
+            <?php endif; ?>
 
+            <?php if ($user['role'] === 'admin'): ?>
             <div class="dashboard-card">
                 <h3>Total Time Slots</h3>
                 <p><?= $total_time_slots ?></p>
