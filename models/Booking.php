@@ -33,35 +33,80 @@ class Booking
         $status
     )
     {
+        // 1. Fetch user role
+        $user_sql = "SELECT role FROM users WHERE id = ?";
+        $user_stmt = $this->conn->prepare($user_sql);
+        $user_stmt->bind_param("i", $user_id);
+        $user_stmt->execute();
+        $user_res = $user_stmt->get_result()->fetch_assoc();
+        $user_role = $user_res ? $user_res['role'] : 'student';
 
-        // BUSINESS RULE:
-        // Không cho đặt trùng phòng cùng khung giờ cùng ngày
+        // 2. Fetch slot details (peak hour)
+        $slot_sql = "SELECT is_peak_hour FROM time_slots WHERE id = ?";
+        $slot_stmt = $this->conn->prepare($slot_sql);
+        $slot_stmt->bind_param("i", $time_slot_id);
+        $slot_stmt->execute();
+        $slot_res = $slot_stmt->get_result()->fetch_assoc();
+        $is_peak_hour = $slot_res ? (int)$slot_res['is_peak_hour'] : 0;
 
+        // 3. Enforce Policy: Students cannot book > 2 peak slots per week
+        if ($is_peak_hour && $user_role === 'student') {
+            $week_sql = "SELECT COUNT(*) as count 
+                         FROM bookings b
+                         JOIN time_slots t ON b.time_slot_id = t.id
+                         WHERE b.user_id = ? 
+                           AND t.is_peak_hour = 1 
+                           AND b.status IN ('approved', 'pending') 
+                           AND YEARWEEK(b.booking_date, 1) = YEARWEEK(?, 1)";
+            $week_stmt = $this->conn->prepare($week_sql);
+            $week_stmt->bind_param("is", $user_id, $booking_date);
+            $week_stmt->execute();
+            $week_count = $week_stmt->get_result()->fetch_assoc()['count'];
+            if ($week_count >= 2) {
+                return "Policy violation: Students cannot book more than 2 peak hour slots per week!";
+            }
+        }
+
+        // 4. Fetch resource category policy details (requires approval)
+        $res_sql = "SELECT rc.requires_approval 
+                    FROM resources r 
+                    JOIN resource_categories rc ON r.category_id = rc.id 
+                    WHERE r.id = ?";
+        $res_stmt = $this->conn->prepare($res_sql);
+        $res_stmt->bind_param("i", $resource_id);
+        $res_stmt->execute();
+        $res_cat = $res_stmt->get_result()->fetch_assoc();
+        $requires_approval = $res_cat ? (int)$res_cat['requires_approval'] : 0;
+
+        $final_status = $status;
+        if ($requires_approval) {
+            $final_status = 'pending';
+        } else {
+            $final_status = 'approved';
+        }
+
+        // 5. BUSINESS RULE: Prevents double booking for the same resource, slot, and date
         $check = "SELECT * FROM bookings
                   WHERE resource_id = ?
                   AND time_slot_id = ?
-                  AND booking_date = ?";
+                  AND booking_date = ?
+                  AND status IN ('approved', 'pending')";
 
         $stmt = $this->conn->prepare($check);
-
         $stmt->bind_param(
             "iis",
             $resource_id,
             $time_slot_id,
             $booking_date
         );
-
         $stmt->execute();
-
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
-
             return "This time slot is already booked!";
         }
 
-        // INSERT BOOKING
-
+        // 6. INSERT BOOKING
         $sql = "INSERT INTO bookings
                 (
                     user_id,
@@ -73,24 +118,26 @@ class Booking
                 VALUES (?, ?, ?, ?, ?)";
 
         $stmt = $this->conn->prepare($sql);
-
         $stmt->bind_param(
             "iiiss",
             $user_id,
             $resource_id,
             $time_slot_id,
             $booking_date,
-            $status
+            $final_status
         );
 
-        // DEBUG REAL MYSQL ERROR
-
         if ($stmt->execute()) {
+            $booking_id = $stmt->insert_id;
+
+            // 7. Write audit log entry
+            $log_sql = "INSERT INTO booking_logs (booking_id, action, new_status, changed_by) VALUES (?, 'create', ?, ?)";
+            $log_stmt = $this->conn->prepare($log_sql);
+            $log_stmt->bind_param("isi", $booking_id, $final_status, $user_id);
+            $log_stmt->execute();
 
             return true;
-
         } else {
-
             return $stmt->error;
         }
     }
