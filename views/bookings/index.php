@@ -33,7 +33,7 @@ $bookings = $controller->index($user_id);
         </div>
 
         <div class="content-card">
-            <div class="top-actions">
+            <div class="top-actions" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                 <a href="create.php" class="btn btn-create">
                     <!-- Plus Icon -->
                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -41,6 +41,17 @@ $bookings = $controller->index($user_id);
                     </svg>
                     Book New Appointment
                 </a>
+
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="statusFilter" style="margin: 0; font-weight: 500;">Filter Status:</label>
+                    <select id="statusFilter" onchange="filterBookings()" style="margin: 0; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <option value="all">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
             </div>
 
             <table>
@@ -55,9 +66,9 @@ $bookings = $controller->index($user_id);
                         <th style="text-align: right;">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="bookingsTableBody">
                     <?php while($row = $bookings->fetch_assoc()): ?>
-                    <tr>
+                    <tr data-status="<?= htmlspecialchars($row['status']) ?>">
                         <td>#<?= $row['id'] ?></td>
                         <td><?= htmlspecialchars($row['user_name'] ?? 'User ID: ' . $row['user_id']) ?></td>
                         <td><?= htmlspecialchars($row['resource_name'] ?? 'Resource ID: ' . $row['resource_id']) ?></td>
@@ -80,9 +91,9 @@ $bookings = $controller->index($user_id);
                             <?php endif; ?>
 
                             <?php if ($user['role'] === 'admin'): ?>
-                                <a href="delete.php?id=<?= $row['id'] ?>" onclick="return confirm('Delete this booking?')" class="btn btn-delete" style="padding: 6px 12px; font-size: 13px;">
+                                <button onclick="ajaxDelete(<?= $row['id'] ?>, this)" class="btn btn-delete" style="padding: 6px 12px; font-size: 13px; border: none; cursor: pointer;">
                                     Delete
-                                </a>
+                                </button>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -99,6 +110,76 @@ $bookings = $controller->index($user_id);
         </div>
     </div>
 </div>
+
+<script>
+function filterBookings() {
+    let status = document.getElementById('statusFilter').value;
+    let rows = document.querySelectorAll('#bookingsTableBody tr[data-status]');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        if (status === 'all' || row.dataset.status === status) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    let noDataRow = document.getElementById('noDataRow');
+    if (visibleCount === 0 && rows.length > 0) {
+        if (!noDataRow) {
+            noDataRow = document.createElement('tr');
+            noDataRow.id = 'noDataRow';
+            noDataRow.innerHTML = '<td colspan="7" style="text-align: center; color: var(--text-light); padding: 30px;">No bookings found for this status.</td>';
+            document.getElementById('bookingsTableBody').appendChild(noDataRow);
+        } else {
+            noDataRow.style.display = '';
+        }
+    } else if (noDataRow) {
+        noDataRow.style.display = 'none';
+    }
+}
+
+function ajaxDelete(id, btn) {
+    if (!confirm('Delete this booking?')) return;
+    
+    // Disable button to prevent double clicks
+    btn.disabled = true;
+    let originalText = btn.innerHTML;
+    btn.innerHTML = 'Deleting...';
+
+    fetch('../../public/api_bookings.php?action=delete', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'id=' + id
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            let row = btn.closest('tr');
+            row.remove();
+            
+            // Check if table is empty now
+            let rows = document.querySelectorAll('#bookingsTableBody tr[data-status]');
+            if (rows.length === 0) {
+                let tbody = document.getElementById('bookingsTableBody');
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-light); padding: 30px;">No bookings found.</td></tr>';
+            }
+        } else {
+            alert(data.message);
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('An error occurred while deleting the booking.');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    });
+}
+</script>
 
 </body>
 </html>

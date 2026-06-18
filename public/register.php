@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="message <?= $message_class ?>"><?= htmlspecialchars($message) ?></div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" id="registerForm">
             <div class="form-grid-2">
                 <!-- Row 1 -->
                 <div>
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
-                        <input type="text" name="name" placeholder="Nguyen Van A" required>
+                        <input type="text" name="name" id="name" placeholder="Nguyen Van A" required>
                     </div>
                 </div>
                 <div>
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
                         </svg>
-                        <input type="text" name="phone" placeholder="0912345678" required>
+                        <input type="text" name="phone" id="phone" placeholder="0912345678" required>
                     </div>
                 </div>
 
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        <input type="email" name="email" placeholder="student@student.edu.vn" required>
+                        <input type="email" name="email" id="email" placeholder="student@student.edu.vn" required>
                     </div>
                 </div>
                 <div>
@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
-                        <input type="password" name="password" placeholder="••••••••" required>
+                        <input type="password" name="password" id="password" placeholder="••••••••" required>
                     </div>
                 </div>
             </div>
@@ -201,6 +201,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    let name = document.getElementById('name').value.trim();
+    let email = document.getElementById('email').value.trim();
+    let password = document.getElementById('password').value;
+    let phone = document.getElementById('phone').value.trim();
+
+    if (!name) {
+        e.preventDefault();
+        alert('Name cannot be empty.');
+        return;
+    }
+
+    if (!email.includes('@') || !email.includes('.')) {
+        e.preventDefault();
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long.');
+        return;
+    }
+
+    if (!/^\d{10,}$/.test(phone)) {
+        e.preventDefault();
+        alert('Phone must be numeric and at least 10 digits.');
+        return;
+    }
+});
+</script>
 
 </body>
 </html>

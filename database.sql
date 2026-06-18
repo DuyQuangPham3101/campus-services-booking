@@ -198,3 +198,23 @@ INSERT INTO time_slots (start_time, end_time, is_peak_hour, day_of_week, slot_na
 INSERT INTO booking_policies (category_id, rule_type, value) VALUES
 (1, 'max_peak_slots_per_week', 2),
 (2, 'requires_lecturer_approval', 1);
+
+-- Insert Sample Bookings
+INSERT INTO bookings (user_id, resource_id, time_slot_id, booking_date, status, created_at) VALUES
+(3, 1, 1, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'approved', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+(3, 2, 2, DATE_ADD(CURDATE(), INTERVAL 2 DAY), 'pending', NOW()),
+(5, 1, 3, DATE_ADD(CURDATE(), INTERVAL 1 DAY), 'approved', DATE_SUB(NOW(), INTERVAL 1 DAY)),
+(5, 3, 4, DATE_ADD(CURDATE(), INTERVAL 3 DAY), 'cancelled', DATE_SUB(NOW(), INTERVAL 3 DAY)),
+(3, 1, 4, DATE_SUB(CURDATE(), INTERVAL 5 DAY), 'approved', DATE_SUB(NOW(), INTERVAL 10 DAY)),
+(5, 2, 1, DATE_SUB(CURDATE(), INTERVAL 10 DAY), 'approved', DATE_SUB(NOW(), INTERVAL 15 DAY));
+
+-- Insert Sample Approvals
+INSERT INTO approvals (booking_id, approved_by, status, note) VALUES
+(1, 1, 'approved', 'Approved automatically'),
+(3, 1, 'approved', 'Looks good'),
+(5, 1, 'approved', 'Past booking'),
+(6, 2, 'approved', 'Lab usage approved by lecturer');
+
+-- Insert Sample Cancellations
+INSERT INTO cancellations (booking_id, reason, cancelled_by) VALUES
+(4, 'No longer needed', 5);

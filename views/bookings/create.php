@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <!-- Date Field -->
                 <label>Booking Date</label>
-                <input type="date" name="booking_date" value="<?= $_POST['booking_date'] ?? '' ?>" required>
+                <input type="date" name="booking_date" id="booking_date" value="<?= $_POST['booking_date'] ?? '' ?>" required min="<?= date('Y-m-d') ?>">
 
                 <!-- Status Field (Hidden for students, visible for admins/lecturers) -->
                 <?php if ($user['role'] !== 'student'): ?>
@@ -125,6 +125,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    let resource_id = document.querySelector('select[name="resource_id"]').value;
+    let time_slot_id = document.querySelector('select[name="time_slot_id"]').value;
+    let booking_date = document.getElementById('booking_date').value;
+    let today = new Date().toISOString().split('T')[0];
+
+    if (!resource_id) {
+        e.preventDefault();
+        alert('Please select a resource.');
+        return;
+    }
+    if (!time_slot_id) {
+        e.preventDefault();
+        alert('Please select a time slot.');
+        return;
+    }
+    if (booking_date < today) {
+        e.preventDefault();
+        alert('Booking date cannot be in the past.');
+        return;
+    }
+});
+</script>
 
 </body>
 </html>

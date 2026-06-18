@@ -52,15 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <!-- Name -->
                 <label>Resource Name</label>
-                <input type="text" name="name" placeholder="e.g. Specialized Lab IT 302" required>
+                <input type="text" name="name" id="name" placeholder="e.g. Specialized Lab IT 302" required>
 
                 <!-- Location -->
                 <label>Location</label>
-                <input type="text" name="location" placeholder="e.g. Building B - Floor 3" required>
+                <input type="text" name="location" id="location" placeholder="e.g. Building B - Floor 3" required>
 
                 <!-- Capacity -->
                 <label>Capacity</label>
-                <input type="number" name="capacity" placeholder="e.g. 40" required>
+                <input type="number" name="capacity" id="capacity" placeholder="e.g. 40" required min="1">
 
                 <!-- Status -->
                 <label>Status</label>
@@ -78,6 +78,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    let name = document.getElementById('name').value.trim();
+    let location = document.getElementById('location').value.trim();
+    let capacity = document.getElementById('capacity').value;
+
+    if (!name) {
+        e.preventDefault();
+        alert('Resource Name cannot be empty.');
+        return;
+    }
+    if (!location) {
+        e.preventDefault();
+        alert('Location cannot be empty.');
+        return;
+    }
+    if (capacity <= 0) {
+        e.preventDefault();
+        alert('Capacity must be greater than 0.');
+        return;
+    }
+});
+</script>
 
 </body>
 </html>

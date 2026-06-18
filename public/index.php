@@ -1,8 +1,13 @@
-<p>
-    Welcome,
-    <?= $_SESSION['user']['name'] ?>
-</p>
+<?php
+session_start();
 
-<a href="../../public/logout.php">
-    Logout
-</a>
+// Redirect to login if not authenticated
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Redirect to dashboard if authenticated
+header("Location: dashboard.php");
+exit();
+?>

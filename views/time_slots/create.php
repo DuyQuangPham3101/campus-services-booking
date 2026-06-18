@@ -54,15 +54,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <form method="POST">
                 <!-- Slot Name -->
                 <label>Slot Name</label>
-                <input type="text" name="slot_name" placeholder="e.g. Slot 1 (Mon)" required>
+                <input type="text" name="slot_name" id="slot_name" placeholder="e.g. Slot 1 (Mon)" required>
 
                 <!-- Start Time -->
                 <label>Start Time</label>
-                <input type="time" name="start_time" required>
+                <input type="time" name="start_time" id="start_time" required>
 
                 <!-- End Time -->
                 <label>End Time</label>
-                <input type="time" name="end_time" required>
+                <input type="time" name="end_time" id="end_time" required>
 
                 <!-- Day of Week (Integer value fix) -->
                 <label>Day of Week</label>
@@ -91,6 +91,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 </div>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    let slot_name = document.getElementById('slot_name').value.trim();
+    let start_time = document.getElementById('start_time').value;
+    let end_time = document.getElementById('end_time').value;
+    
+    if (!slot_name) {
+        e.preventDefault();
+        alert('Slot Name cannot be empty.');
+        return;
+    }
+
+    if (start_time && end_time) {
+        if (end_time <= start_time) {
+            e.preventDefault();
+            alert('End time must be after start time.');
+            return;
+        }
+    }
+});
+</script>
 
 </body>
 </html>

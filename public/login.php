@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <svg class="input-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
-                <input type="email" name="email" placeholder="email@campus.edu.vn" value="<?= htmlspecialchars($email) ?>" required>
+                <input type="email" name="email" id="email" placeholder="email@campus.edu.vn" value="<?= htmlspecialchars($email) ?>" required>
             </div>
 
             <!-- Password Input -->
@@ -179,6 +179,23 @@ togglePassword.addEventListener('click', function () {
     } else {
         eyeOpen.style.display = 'none';
         eyeClosed.style.display = 'block';
+    }
+});
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    let email = document.getElementById('email').value.trim();
+    let password = document.getElementById('password').value;
+
+    if (!email.includes('@') || !email.includes('.')) {
+        e.preventDefault();
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    if (password === '') {
+        e.preventDefault();
+        alert('Password cannot be empty.');
+        return;
     }
 });
 </script>

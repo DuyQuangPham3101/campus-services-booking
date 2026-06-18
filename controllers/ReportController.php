@@ -59,4 +59,44 @@ class ReportController
                 ORDER BY usage_count DESC";
         return $this->conn->query($sql);
     }
+    // GET WEEKLY BOOKING STATS (last 4 weeks)
+    public function getWeeklyStats() {
+        $sql = "SELECT 
+                    YEARWEEK(booking_date, 1) as week_num,
+                    MIN(booking_date) as week_start,
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved,
+                    SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                    SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
+                FROM bookings 
+                WHERE booking_date >= DATE_SUB(CURDATE(), INTERVAL 4 WEEK)
+                GROUP BY YEARWEEK(booking_date, 1)
+                ORDER BY week_num ASC";
+        return $this->conn->query($sql);
+    }
+
+    // GET TOP USERS BY BOOKING COUNT
+    public function getTopUsers() {
+        $sql = "SELECT u.id, u.name, u.email, u.role, COUNT(b.id) as booking_count
+                FROM users u
+                LEFT JOIN bookings b ON u.id = b.user_id
+                GROUP BY u.id
+                HAVING booking_count > 0
+                ORDER BY booking_count DESC
+                LIMIT 10";
+        return $this->conn->query($sql);
+    }
+
+    // GET MONTHLY TREND
+    public function getMonthlyTrend() {
+        $sql = "SELECT 
+                    DATE_FORMAT(booking_date, '%Y-%m') as month,
+                    DATE_FORMAT(booking_date, '%M %Y') as month_label,
+                    COUNT(*) as total
+                FROM bookings
+                GROUP BY DATE_FORMAT(booking_date, '%Y-%m')
+                ORDER BY month ASC
+                LIMIT 12";
+        return $this->conn->query($sql);
+    }
 }

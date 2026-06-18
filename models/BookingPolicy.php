@@ -12,6 +12,26 @@ class BookingPolicy
         $this->conn = $conn;
     }
 
+    // GET ALL
+    public function getAll()
+    {
+        $sql = "SELECT bp.*, rc.name as category_name 
+                FROM booking_policies bp 
+                JOIN resource_categories rc ON bp.category_id = rc.id 
+                ORDER BY bp.id ASC";
+        return $this->conn->query($sql);
+    }
+
+    // GET BY ID
+    public function getById($id)
+    {
+        $sql = "SELECT * FROM booking_policies WHERE id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     // GET ALL BY CATEGORY
     public function getByCategoryId($category_id)
     {
